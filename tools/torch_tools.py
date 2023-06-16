@@ -24,6 +24,13 @@ def pad_wav(waveform, segment_length):
         waveform = torch.cat([waveform, pad_wav])
         return waveform
     
+def stack_wav(waveform, segment_length):
+    waveform_length = len(waveform)
+    new_length = torch.ceil(waveform_length / segment_length).type(torch.int32) * segment_length
+    pad_wav = torch.zeros(new_length - waveform_length).to(waveform.device)
+    waveform = torch.cat([waveform, pad_wav])
+
+    return waveform.reshape([-1, segment_length])
     
 def _pad_spec(fbank, target_length=1024):
     batch, n_frames, channels = fbank.shape
